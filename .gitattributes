@@ -1,0 +1,6 @@
+*.scss    text eol=lf
+*.css     text eol=lf
+*.css.map text eol=lf
+*.html    text eol=lf
+*.js      text eol=lf
+*.svg     text eol=lf
