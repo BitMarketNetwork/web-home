@@ -1,0 +1,24 @@
+/* reset */
+$min-width: 320px; 
+$max-width: 1260px;
+$base-bg: #E2E5EB;
+$base-font-size: 16px; 
+$base-line-height: 150%; 
+$base-font-family: 'Montserrat', sans-serif;
+$custom-font-family: 'Montserrat', sans-serif;
+$link-color: #2261EF;
+$transition: all 0.2s linear;
+
+/* main variables */
+
+//text, titles
+$text-color: #272727;
+$title-color: #272727;
+$title-font-family: $custom-font-family;
+
+$font-size-h1: 50px;
+$line-height-h1: 62px;
+$font-size-h2: 40px;
+$line-height-h2: 50px;
+$font-size-h3: 35px;
+$line-height-h3: 41px;
