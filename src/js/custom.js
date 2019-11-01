@@ -49,14 +49,14 @@ $(function () {
 	$(".js-mask-phone").mask("+7 (999) 999-99-99");
 
 	/* phone masks */
-	
+
 	var jsImg = $('.js-img');
 
 	new LazyLoad(jsImg, {
 		root: null,
 		rootMargin: "0px",
 		threshold: 0
-   	});
+	});
 
 	$(".js-toggle-menu").click(function () {
 		$('.js--header-nav').toggleClass('opened');
@@ -80,6 +80,8 @@ $(function () {
 		$('.js--list-lang').slideToggle();
 	});
 });
+
+	
 
 var handler = function () {
 
