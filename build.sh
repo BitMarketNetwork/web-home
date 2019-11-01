@@ -15,11 +15,14 @@ pack_file()
 {
     source_type=${1}
     source_file="${2}"
+    source_file_dir="$(dirname "${source_file}")"
+
     output_file="$(realpath --relative-to "${source_dir}" "${source_file}")"
     output_file="${output_dir}/${output_file}"
+    output_file_dir="$(dirname "${output_file}")"
 
     echo -e "\n-> ${output_file}"
-    mkdir -p "$(dirname "${output_file}")" || return 1
+    mkdir -p "${output_file_dir}" || return 1
 
     case "${source_type}" in
     css)
@@ -64,6 +67,10 @@ pack_file()
         return 1
         ;;
     esac
+
+    touch -cr "${source_file}" "${output_file}" || return 1
+    touch -cr "${source_file_dir}" "${output_file_dir}" || return 1
+
     return 0
 }
 
@@ -100,8 +107,10 @@ pack_all font '*.ttf'   || exit 1
 pack_all font '*.woff'  || exit 1
 pack_all font '*.woff2' || exit 1
 
-find "${output_dir}/\*" -type -f -exec chmod 0644 {} \;
-find "${output_dir}/\*" -type -d -exec chmod 0755 {} \;
+find "${output_dir}/" -type f -exec chmod 0644 {} \;
+find "${output_dir}/" -type d -exec chmod 0755 {} \;
+
+ln -vs index-en.html "${output_dir}/index.html" || exit 1
 
 echo -e "\nBUILD SUCCESSFUL"
 exit 0
