@@ -1,7 +1,7 @@
 #!/bin/bash -e
 
 source_dir="$(dirname "$(realpath -s "${0}")")/build"
-output_dir=p-frontend1:/srv/htdocs/frontend/22
+output_dir=p-frontend1:/srv/htdocs/frontend
 
 echo "Uploading to ${output_dir}..."
 rsync \
