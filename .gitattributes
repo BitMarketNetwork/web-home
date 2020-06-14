@@ -1,6 +1,8 @@
-*.scss    diff text eol=lf
-*.css     diff text eol=lf
-*.css.map diff text eol=lf
-*.html    diff text eol=lf
-*.js      diff text eol=lf
-*.svg     diff text eol=lf
+* text=auto
+
+*.scss    text eol=lf
+*.css     text eol=lf
+*.css.map text eol=lf
+*.html    text eol=lf
+*.js      text eol=lf
+*.svg     text eol=lf
