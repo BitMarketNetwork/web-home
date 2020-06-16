@@ -16,7 +16,8 @@ OBJECTS := $(addprefix $(BUILDDIR)/, \
 )
 
 define make_path
-	@mkdir -m 0755 -p $(dir $@)
+	@mkdir -p $(dir $@)
+	@chmod 0755 $(dir $@)
 	@touch -cr $(dir $<) $(dir $@)
 	@[[ "$(dir $@)" == "$(BUILDDIR)/" ]] || \
 		touch -cr $(dir $<).. $(dir $@)..
@@ -110,7 +111,7 @@ $(BUILDDIR)/%.jpg:  $(SRCDIR)/%.jpg  ; $(copy_file)
 
 $(BUILDDIR)/%.svg: $(SRCDIR)/%.svg
 	$(make_path)
-	$(MINIFY) --type svg --svg-decimals -1 -o $@ $<
+	$(MINIFY) --type svg --svg-precision 0 -o $@ $<
 	$(fix_file)
 
 # ignore
