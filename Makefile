@@ -5,7 +5,7 @@ export SHELL = /bin/bash
 ROOTDIR := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
 SRCDIR := $(abspath $(ROOTDIR)/src)
 BUILDDIR := $(abspath $(ROOTDIR)/build)
-UPLOADDIR := p-frontend1:/srv/htdocs/frontend
+UPLOADDIR := p-frontend2:/srv/htdocs/frontend
 MINIFY := $(ROOTDIR)/3rdparty/minify_2.7.6_linux_amd64/minify
 SASSC := sassc
 
