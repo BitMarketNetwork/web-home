@@ -12,6 +12,8 @@ SASSC := sassc
 OBJECTS := $(addprefix $(BUILDDIR)/, \
 	$(patsubst $(SRCDIR)/%, %, $(shell find $(SRCDIR) -type f)) \
 	css/style.css \
+	favicon.ico \
+	apple-touch-icon.png \
 	index.html \
 )
 
@@ -103,6 +105,11 @@ $(BUILDDIR)/%.ttf:   $(SRCDIR)/%.ttf   ; $(copy_file)
 $(BUILDDIR)/%.eot:   $(SRCDIR)/%.eot   ; $(copy_file)
 
 # images
+$(BUILDDIR)/favicon.ico: $(SRCDIR)/img/favicons/favicon.ico
+	$(copy_file)
+$(BUILDDIR)/apple-touch-icon.png: $(SRCDIR)/img/favicons/apple-touch-icon.png
+	$(copy_file)
+
 $(BUILDDIR)/%.gif:  $(SRCDIR)/%.gif  ; $(copy_file)
 $(BUILDDIR)/%.png:  $(SRCDIR)/%.png  ; $(copy_file)
 $(BUILDDIR)/%.ico:  $(SRCDIR)/%.ico  ; $(copy_file)
@@ -113,6 +120,15 @@ $(BUILDDIR)/%.svg: $(SRCDIR)/%.svg
 	$(make_path)
 	$(MINIFY) --type svg --svg-precision 0 -o $@ $<
 	$(fix_file)
+
+# other
+$(BUILDDIR)/%.xml: $(SRCDIR)/%.xml
+	$(make_path)
+	$(MINIFY) --type xml -o $@ $<
+	$(fix_file)
+
+$(BUILDDIR)/%.webmanifest: $(SRCDIR)/%.webmanifest
+	$(copy_file)
 
 # ignore
 $(BUILDDIR)/%.zip: ;
