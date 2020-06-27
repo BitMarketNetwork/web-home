@@ -59,7 +59,7 @@ upload:
 		--times \
 		--timeout=30 \
 		$(BUILDDIR)/ \
-		$(UPLOADDIR) \
+		$(UPLOADDIR)
 
 # html
 $(BUILDDIR)/index.html: $(SRCDIR)/index-en.html
