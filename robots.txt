@@ -1,0 +1,24 @@
+User-agent: *
+Allow: /img/
+Disallow: /js/
+Disallow: /css/
+Disallow: /scss/
+
+User-agent: Googlebot
+Allow: /
+
+User-agent: Googlebot-Image
+Allow: /img/
+Disallow: /js/
+Disallow: /css/
+Disallow: /scss/
+
+User-agent: Googlebot-News
+Disallow: /
+
+User-agent: Yandex
+Allow: /img/
+Disallow: /js/
+Disallow: /css/
+Disallow: /scss/
+Host: https://bitmarket.network
