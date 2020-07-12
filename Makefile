@@ -126,6 +126,7 @@ $(BUILDDIR)/%.xml: $(SRCDIR)/%.xml
 	$(make_path)
 	$(MINIFY) --type xml -o $@ $<
 	$(fix_file)
+$(BUILDDIR)/%.txt: $(SRCDIR)/%.txt ; $(copy_file)
 
 $(BUILDDIR)/%.webmanifest: $(SRCDIR)/%.webmanifest
 	$(copy_file)
