@@ -2,39 +2,39 @@
 .SUFFIXES:
 export SHELL = /bin/bash
 
-ROOTDIR := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
-SRCDIR := $(abspath $(ROOTDIR)/src)
-BUILDDIR := $(abspath $(ROOTDIR)/build)
-UPLOADDIR := frontend2:/srv/htdocs/frontend
-MINIFY := $(ROOTDIR)/3rdparty/minify_2.7.6_linux_amd64/minify
+BASE_DIR := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
+SOURCE_DIR := $(abspath $(BASE_DIR)/src)
+BUILD_DIR := $(abspath $(BASE_DIR)/build)
+UPLOAD_DIR := frontend2:/srv/htdocs/frontend
+MINIFY := $(BASE_DIR)/3rdparty/minify_2.7.6_linux_amd64/minify
 SASSC := sassc
 
-OBJECTS := $(addprefix $(BUILDDIR)/, \
-	$(patsubst $(SRCDIR)/%, %, $(shell find $(SRCDIR) -type f)) \
+OBJECTS := $(addprefix $(BUILD_DIR)/, \
+	$(patsubst $(SOURCE_DIR)/%, %, $(shell find $(SOURCE_DIR) -type f)) \
 	css/style.css \
 	favicon.ico \
 	apple-touch-icon.png \
 	index.html \
 )
 
-define make_path
+define MAKE_PATH
 	@mkdir -p $(dir $@)
 	@chmod 0755 $(dir $@)
 	@touch -cr $(dir $<) $(dir $@)
-	@[[ "$(dir $@)" == "$(BUILDDIR)/" ]] || \
+	@[[ "$(dir $@)" == "$(BUILD_DIR)/" ]] || \
 		touch -cr $(dir $<).. $(dir $@)..
 endef
 
-define fix_file
+define FIX_FILE
 	@chmod 0644 $@
 	@touch -cr $< $@
 	@touch -cr $(dir $<) $(dir $@)
 endef
 
-define copy_file
-	$(make_path)
+define COPY_FILE
+	$(MAKE_PATH)
 	cp -L --preserve=timestamps $< $@
-	$(fix_file)
+	$(FIX_FILE)
 endef
 
 .PHONY: all
@@ -42,95 +42,92 @@ all: $(OBJECTS)
 
 .PHONY: clean
 clean:
-	rm -vrf $(BUILDDIR)
+	rm -vrf $(BUILD_DIR)
 
 .PHONY: upload
 upload:
 	rsync \
-		--verbose \
 		--progress \
-		--8-bit-output \
-		--human-readable=1 \
+		--human-readable \
 		--recursive \
 		--links \
 		--copy-unsafe-links \
 		--delete \
 		--perms \
 		--times \
-		--timeout=30 \
-		$(BUILDDIR)/ \
-		$(UPLOADDIR)
+		$(BUILD_DIR)/ \
+		$(UPLOAD_DIR)
 
 # html
-$(BUILDDIR)/index.html: $(SRCDIR)/index-en.html
-	$(make_path)
+$(BUILD_DIR)/index.html: $(SOURCE_DIR)/index-en.html
+	$(MAKE_PATH)
 	ln -s $(notdir $<) $@
-	$(fix_file)
+	$(FIX_FILE)
 
-$(BUILDDIR)/%.html: $(SRCDIR)/%.html
-	$(make_path)
+$(BUILD_DIR)/%.html: $(SOURCE_DIR)/%.html
+	$(MAKE_PATH)
 	$(MINIFY) --type html \
 		--html-keep-conditional-comments \
 		--html-keep-default-attrvals \
 		--html-keep-document-tags \
 		--html-keep-end-tags -o \
 		$@ $<
-	$(fix_file)
+	$(FIX_FILE)
 
 # styles
-$(BUILDDIR)/css/style.css: $(SRCDIR)/scss/style.scss
-	$(make_path)
+$(BUILD_DIR)/css/style.css: $(SOURCE_DIR)/scss/style.scss
+	$(MAKE_PATH)
 	$(SASSC) --style compressed $< $@
-	$(fix_file)
+	$(FIX_FILE)
 
-$(BUILDDIR)/%.css: $(SRCDIR)/%.css
-	$(make_path)
+$(BUILD_DIR)/%.css: $(SOURCE_DIR)/%.css
+	$(MAKE_PATH)
 	$(MINIFY) --type css --css-decimals -1 -o $@ $<
-	$(fix_file)
+	$(FIX_FILE)
 
-$(BUILDDIR)/%.css.map: ;
-$(BUILDDIR)/scss/%: ;
-$(BUILDDIR)/scss/%: ;
+$(BUILD_DIR)/%.css.map: ;
+$(BUILD_DIR)/scss/%: ;
+$(BUILD_DIR)/scss/%: ;
 
 # scripts
-$(BUILDDIR)/%.js: $(SRCDIR)/%.js
-	$(make_path)
+$(BUILD_DIR)/%.js: $(SOURCE_DIR)/%.js
+	$(MAKE_PATH)
 	$(MINIFY) --type js -o $@ $<
-	$(fix_file)
+	$(FIX_FILE)
 
 # fonts
-$(BUILDDIR)/%.woff:  $(SRCDIR)/%.woff  ; $(copy_file)
-$(BUILDDIR)/%.woff2: $(SRCDIR)/%.woff2 ; $(copy_file)
-$(BUILDDIR)/%.ttf:   $(SRCDIR)/%.ttf   ; $(copy_file)
-$(BUILDDIR)/%.eot:   $(SRCDIR)/%.eot   ; $(copy_file)
+$(BUILD_DIR)/%.woff:  $(SOURCE_DIR)/%.woff  ; $(COPY_FILE)
+$(BUILD_DIR)/%.woff2: $(SOURCE_DIR)/%.woff2 ; $(COPY_FILE)
+$(BUILD_DIR)/%.ttf:   $(SOURCE_DIR)/%.ttf   ; $(COPY_FILE)
+$(BUILD_DIR)/%.eot:   $(SOURCE_DIR)/%.eot   ; $(COPY_FILE)
 
 # images
-$(BUILDDIR)/favicon.ico: $(SRCDIR)/img/favicons/favicon.ico
-	$(copy_file)
-$(BUILDDIR)/apple-touch-icon.png: $(SRCDIR)/img/favicons/apple-touch-icon.png
-	$(copy_file)
+$(BUILD_DIR)/favicon.ico: $(SOURCE_DIR)/img/favicons/favicon.ico
+	$(COPY_FILE)
+$(BUILD_DIR)/apple-touch-icon.png: $(SOURCE_DIR)/img/favicons/apple-touch-icon.png
+	$(COPY_FILE)
 
-$(BUILDDIR)/%.gif:  $(SRCDIR)/%.gif  ; $(copy_file)
-$(BUILDDIR)/%.png:  $(SRCDIR)/%.png  ; $(copy_file)
-$(BUILDDIR)/%.ico:  $(SRCDIR)/%.ico  ; $(copy_file)
-$(BUILDDIR)/%.jpeg: $(SRCDIR)/%.jpeg ; $(copy_file)
-$(BUILDDIR)/%.jpg:  $(SRCDIR)/%.jpg  ; $(copy_file)
+$(BUILD_DIR)/%.gif:  $(SOURCE_DIR)/%.gif  ; $(COPY_FILE)
+$(BUILD_DIR)/%.png:  $(SOURCE_DIR)/%.png  ; $(COPY_FILE)
+$(BUILD_DIR)/%.ico:  $(SOURCE_DIR)/%.ico  ; $(COPY_FILE)
+$(BUILD_DIR)/%.jpeg: $(SOURCE_DIR)/%.jpeg ; $(COPY_FILE)
+$(BUILD_DIR)/%.jpg:  $(SOURCE_DIR)/%.jpg  ; $(COPY_FILE)
 
-$(BUILDDIR)/%.svg: $(SRCDIR)/%.svg
-	$(make_path)
+$(BUILD_DIR)/%.svg: $(SOURCE_DIR)/%.svg
+	$(MAKE_PATH)
 	$(MINIFY) --type svg --svg-precision 0 -o $@ $<
-	$(fix_file)
+	$(FIX_FILE)
 
 # other
-$(BUILDDIR)/%.xml: $(SRCDIR)/%.xml
-	$(make_path)
+$(BUILD_DIR)/%.xml: $(SOURCE_DIR)/%.xml
+	$(MAKE_PATH)
 	$(MINIFY) --type xml -o $@ $<
-	$(fix_file)
-$(BUILDDIR)/%.txt: $(SRCDIR)/%.txt ; $(copy_file)
+	$(FIX_FILE)
+$(BUILD_DIR)/%.txt: $(SOURCE_DIR)/%.txt ; $(COPY_FILE)
 
-$(BUILDDIR)/%.webmanifest: $(SRCDIR)/%.webmanifest
-	$(copy_file)
+$(BUILD_DIR)/%.webmanifest: $(SOURCE_DIR)/%.webmanifest
+	$(COPY_FILE)
 
 # ignore
-$(BUILDDIR)/%.zip: ;
-$(BUILDDIR)/%.empty: ;
+$(BUILD_DIR)/%.zip: ;
+$(BUILD_DIR)/%.empty: ;
